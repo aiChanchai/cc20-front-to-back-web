@@ -2,28 +2,26 @@ import React from "react";
 import FormInput from "../../components/form/FormInput";
 import { createAlert } from "../../utils/createAlert";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import Buttons from "../../components/form/Buttons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "../../utils/validator";
+import { actionRegister } from "../../api/auth";
 
 function Register() {
-  const { handleSubmit, register, formState } = useForm({
+  const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(registerSchema),
   });
   const { isSubmitting, errors } = formState;
   console.log(errors);
   const hdlSubmit = async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     // console.log(value);
 
     try {
-      const res = await axios.post(
-        "http://localhost:8000/auth/register",
-        value
-      );
+      const res = await actionRegister(value);
       console.log(res);
       createAlert("success", res.data?.message);
+      reset();
     } catch (error) {
       console.log(error);
       createAlert("info", error.response?.data?.message);
