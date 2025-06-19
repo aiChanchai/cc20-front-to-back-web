@@ -3,10 +3,18 @@ import FormInput from "../../components/form/FormInput";
 import { createAlert } from "../../utils/createAlert";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import Buttons from "../../components/form/Buttons";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { registerSchema } from "../../utils/validator";
 
 function Register() {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register, formState } = useForm({
+    resolver: yupResolver(registerSchema),
+  });
+  const { isSubmitting, errors } = formState;
+  console.log(errors);
   const hdlSubmit = async (value) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     // console.log(value);
 
     try {
@@ -15,7 +23,7 @@ function Register() {
         value
       );
       console.log(res);
-      createAlert("success", res.response?.data?.message);
+      createAlert("success", res.data?.message);
     } catch (error) {
       console.log(error);
       createAlert("info", error.response?.data?.message);
@@ -24,22 +32,30 @@ function Register() {
   return (
     <div className="flex w-full h-full justify-end">
       {/* Card */}
-      <div className="border w-64 h-[300px] p-4 m-4 rounded-xl">
+      <div className="border w-64  p-4 m-4 rounded-xl">
         <h1 className="font-bold text-center">Register</h1>
 
         {/* Form */}
         <form onSubmit={handleSubmit(hdlSubmit)}>
           <div className="flex gap-4 flex-col">
-            <FormInput register={register} name="email" />
-            <FormInput register={register} name="name" />
-            <FormInput register={register} name="password" />
-            <FormInput register={register} name="confirmPassword" />
+            <FormInput register={register} name="email" errors={errors} />
+            <FormInput register={register} name="name" errors={errors} />
+            <FormInput
+              type="password"
+              register={register}
+              name="password"
+              errors={errors}
+            />
+            <FormInput
+              type="password"
+              register={register}
+              name="confirmPassword"
+              errors={errors}
+            />
           </div>
 
           <div className="flex justify-center mt-4">
-            <button className="bg-black p-2 rounded-md text-white">
-              Register
-            </button>
+            <Buttons isSubmitting={isSubmitting} label="Register" />
           </div>
         </form>
       </div>

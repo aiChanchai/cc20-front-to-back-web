@@ -4,6 +4,6 @@ export const createAlert = (icon, text) => {
   return Swal.fire({
     title: text || "Something Wrong!!!",
     icon: icon || "info",
-    timer: "2000",
+    timer: "4000",
   });
 };
